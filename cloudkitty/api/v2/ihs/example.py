@@ -1,8 +1,10 @@
+import flask
 import voluptuous
 from cloudkitty.api.v2 import base
 from cloudkitty import validation_utils
 from cloudkitty.api.v2 import utils as api_utils
 from werkzeug import exceptions as http_exceptions
+from cloudkitty.common import policy
 
 class Example(base.BaseResource):
    afruit = ['banana', 'strawberry', 'grape']
@@ -18,13 +20,14 @@ class Example(base.BaseResource):
        ): validation_utils.get_string_type(),
    })
    def get(self, fruit=None):
+       policy.authorize(flask.request.context, 'example:get_example', {})
        return {}
 
    @api_utils.add_input_schema('body', {
        voluptuous.Required('fruit'): validation_utils.get_string_type(),
    })
    def post(self, fruit=None):
-       #policy.authorize(flask.request.context, 'example:submit_fruit', {})
+       policy.authorize(flask.request.context, 'example:submit_fruit', {})
        if not fruit:
            raise http_exceptions.BadRequest(
                'You must submit a fruit',

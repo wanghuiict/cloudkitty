@@ -24,6 +24,7 @@ from oslo_policy import opts as policy_opts
 from oslo_policy import policy
 from oslo_utils import excutils
 import six
+import time
 
 from cloudkitty.common import policies
 
@@ -99,12 +100,19 @@ def authorize(context, action, target):
        :raises PolicyNotAuthorized: if verification fails.
 
     """
+    LOG.warning('wanghuiict: Policy check for %(action)s  with credentials '
+              '%(credentials)s',
+              {'action': action, 'credentials': context.to_dict()})
+
     if CONF.auth_strategy != "keystone":
         return
 
     init()
 
     try:
+        #LOG.warning("wanghuiict: sleep 30 seconds for debug")
+        #time.sleep(30)
+
         return _ENFORCER.authorize(action, target, context.to_dict(),
                                    do_raise=True,
                                    exc=PolicyNotAuthorized,

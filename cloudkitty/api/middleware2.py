@@ -13,18 +13,21 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 #
-from keystonemiddleware import auth_token
+from oslo_config import cfg
+from oslo_log import log
+from oslo_middleware import base
 
+LOG = log.getLogger(__name__)
 
-class AuthTokenMiddleware(auth_token.AuthProtocol):
-    """A subclass of keystone auth_token middleware.
-
+class AuthCloudPlatformMiddleware(base.ConfigurableMiddleware):
+    """
     It avoids authentication on public routes.
     """
-
     def __init__(self, app, conf, public_api_routes=[]):
+        LOG.warning("wanghuiict: AuthCloudPlatformMiddleware")
         self._public_routes = public_api_routes
-        super(AuthTokenMiddleware, self).__init__(app, conf)
+        self._app = app
+        super(AuthCloudPlatformMiddleware, self).__init__(app, conf)
 
     def __call__(self, env, start_response):
         # Strip the / from the URL if we're not dealing with '/'
@@ -33,7 +36,7 @@ class AuthTokenMiddleware(auth_token.AuthProtocol):
         if path in self._public_routes:
             return self._app(env, start_response)
 
-        return super(AuthTokenMiddleware, self).__call__(env, start_response)
+        return super(AuthCloudPlatformMiddleware, self).__call__(env, start_response)
 
     @classmethod
     def factory(cls, global_config, **local_conf):

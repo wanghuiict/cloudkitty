@@ -135,14 +135,17 @@ class RatingEndpoint(object):
         LOG.info('Received enable command for module %s.', name)
         lock = lockutils.lock('module-state')
         with lock:
+            LOG.info('Set _module_state[%s]=True.', name)
             self._module_state[name] = True
 
     def disable_module(self, ctxt, name):
         LOG.info('Received disable command for module %s.', name)
         lock = lockutils.lock('module-state')
         with lock:
+            LOG.info('Set _module_state[%s]=False.', name)
             self._module_state[name] = False
             if name in self._pending_reload:
+                LOG.info('Call _pending_reload.remove(%s).', name)
                 self._pending_reload.remove(name)
 
 
