@@ -48,6 +48,7 @@ def _extend_request_context():
     ctx = {
         'user_id': headers.get('X-User-Id', ''),
         'auth_token': headers.get('X-Auth-Token', ''),
+        'authorization': headers.get('authorization', ''),
         'is_admin': is_admin,
         'roles': roles,
         'project_id': headers.get('X-Project-Id', ''),

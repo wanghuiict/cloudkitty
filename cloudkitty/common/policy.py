@@ -101,8 +101,12 @@ def authorize(context, action, target):
 
     """
     LOG.warning('wanghuiict: Policy check for %(action)s  with credentials '
-              '%(credentials)s',
-              {'action': action, 'credentials': context.to_dict()})
+              '%(credentials)s. auth_strategy %(auth_strategy)s',
+              {'action': action, 'credentials': context.to_dict(), 'auth_strategy': CONF.auth_strategy})
+
+    if CONF.auth_strategy == "cloudplatform":
+        LOG.warning('wanghuiict: cloudplatform auth token check pass')
+        return
 
     if CONF.auth_strategy != "keystone":
         return

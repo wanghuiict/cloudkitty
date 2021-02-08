@@ -19,6 +19,10 @@ from pecan import hooks
 from cloudkitty.common import policy
 from cloudkitty import messaging
 
+from oslo_log import log
+
+LOG = log.getLogger(__name__)
+
 
 class RPCHook(hooks.PecanHook):
     def __init__(self):
@@ -40,6 +44,8 @@ class ContextHook(hooks.PecanHook):
     def on_route(self, state):
         headers = state.request.headers
 
+        LOG.warning("wanghuiict: ContextHook headers.environ %s" % headers.environ)
+
         roles = headers.get('X-Roles', '').split(',')
         is_admin = policy.check_is_admin(roles)
 
@@ -47,6 +53,7 @@ class ContextHook(hooks.PecanHook):
             'user_id': headers.get('X-User-Id', ''),
             'tenant': headers.get('X-Tenant-Id', ''),
             'auth_token': headers.get('X-Auth-Token', ''),
+            'authorization': headers.environ.get('authorization',''),
             'is_admin': is_admin,
             'roles': roles,
             "user_name": headers.get('X-User-Name', ''),

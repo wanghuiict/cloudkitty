@@ -25,6 +25,7 @@ def set_cors_middleware_defaults():
     """Update default configuration options for oslo.middleware."""
     cors.set_defaults(
         allow_headers=['X-Auth-Token',
+#                       'Authorization',
                        'X-Subject-Token',
                        'X-Roles',
                        'X-User-Id',
@@ -33,6 +34,7 @@ def set_cors_middleware_defaults():
                        'X-Tenant-Id',
                        'X-OpenStack-Request-ID'],
         expose_headers=['X-Auth-Token',
+#                        'Authorization',
                         'X-Subject-Token',
                         'X-Service-Token',
                         'X-OpenStack-Request-ID'],
